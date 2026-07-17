@@ -7,4 +7,5 @@ __pycache__/
 *.mp4
 *.log
 /media/sdb2/huggingface/
-tests/output_*.mp4
+tests/
+video_gen.py
