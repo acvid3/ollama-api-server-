@@ -1,0 +1,10 @@
+node_modules/
+.env
+debug.log
+cogvideox/
+__pycache__/
+*.pyc
+*.mp4
+*.log
+/media/sdb2/huggingface/
+tests/output_*.mp4

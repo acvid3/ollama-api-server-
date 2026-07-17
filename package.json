@@ -1,12 +1,13 @@
 {
-  "name": "linkedin_message_generator",
+  "name": "ollama-api-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Ollama proxy API with text generation, function calling routing, and video generation support",
+  "main": "api.mjs",
   "scripts": {
+    "start": "node api.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["ollama", "ai", "function-calling", "video-generation"],
   "author": "",
   "license": "ISC",
   "type": "module",
