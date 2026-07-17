@@ -1,74 +1,62 @@
 # Ollama API Server
 
-A proxy server that routes requests to Ollama models with support for text generation, function calling, and video generation.
+A lightweight HTTP proxy that routes requests to local Ollama models.
 
-## Setup
+Supports:
+- Text generation (`type: "text"`)
+- Function calling routing (`type: "function_calling"`)
+- Video generation — planned but not implemented
 
-1. Install dependencies: `npm install`
-2. Copy `.env` and configure your models
-3. Start: `npm start` or `systemctl start ollama-api.service`
+## Quick Start
 
-## API Endpoints
+```bash
+node api.mjs
+```
+
+Server starts on `http://0.0.0.0:3457`.
+
+Requires Ollama running locally with the configured models pulled.
+
+## API
 
 ### POST /api/ask
 
-Generate a response from an Ollama model.
-
-**Request:**
 ```json
 {
   "type": "text",
-  "system_prompt": "You are a helpful assistant.",
-  "user_message": "What is the capital of France?",
-  "session_id": "optional-session-id"
+  "system_prompt": "...",
+  "user_message": "...",
+  "session_id": "optional"
 }
 ```
 
 **Types:**
 
-| Type | Description | Model |
-|---|---|---|
-| `text` | Standard text generation | `qwen2.5:14b` |
-| `function_calling` | Route to a registered function | `qwen2.5:14b` |
-| `video` | Video generation (WIP) | `tbd` |
+| Type | Behavior |
+|---|---|
+| `text` | Sends prompt to LLM, returns text response |
+| `function_calling` | Routes to a registered function or returns `null` |
+| `video` | Not implemented yet |
 
-### POST /api/function
+### Functions
 
-Register a new function for function calling.
-
-```json
-{
-  "name": "my_function",
-  "description": "What this function does",
-  "parameters": {
-    "param1": { "type": "string" }
-  }
-}
+```
+POST   /api/function          — register { name, description, parameters? }
+GET    /api/function          — list all
+DELETE /api/function/:name    — delete
 ```
 
-### GET /api/function
+When no function matches, the API returns available endpoints in the response.
 
-List all registered functions.
+## Configuration
 
-### DELETE /api/function/:name
+Set via environment variables or `.env` file:
 
-Delete a registered function.
-
-## Environment Variables
-
-| Variable | Default | Description |
+| Variable | Default | Notes |
 |---|---|---|
-| `API_PORT` | `3457` | Server port |
-| `OLLAMA_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_MODEL` | `qwen2.5:7b` | Default model |
-| `OLLAMA_MODEL_TEXT` | `qwen2.5:14b` | Model for text type |
-| `OLLAMA_MODEL_FUNCTION` | `qwen2.5:14b` | Model for function_calling |
-| `OLLAMA_MODEL_VIDEO` | `qwen2.5:14b` | Model for video type |
-
-## Systemd Service
-
-```bash
-systemctl start ollama-api.service
-systemctl enable ollama-api.service
-```
-# ollama-api-server-
+| `API_PORT` | `3457` | |
+| `OLLAMA_URL` | `http://localhost:11434` | |
+| `OLLAMA_MODEL` | `qwen2.5:7b` | Fallback model |
+| `OLLAMA_MODEL_TEXT` | `qwen2.5:14b` | Used for `type: "text"` |
+| `OLLAMA_MODEL_FUNCTION` | `qwen2.5:14b` | Used for `type: "function_calling"` |
+| `OLLAMA_MODEL_VIDEO` | `qwen2.5:14b` | Not yet used |
